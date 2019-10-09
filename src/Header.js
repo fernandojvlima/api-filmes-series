@@ -11,8 +11,10 @@ import {
 import { Link } from 'react-router-dom'
 
 const Header = () => {
-  const [open, setOpen] = useState('open');
-  const toggle = () => { setOpen(!open) };
+  const [open, setOpen] = useState(false);
+  const toggle = () => {
+    setOpen(!open);
+  }
   return (
     <div>
       <Navbar color='light' light expand='md'>
