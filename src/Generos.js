@@ -4,6 +4,7 @@ import { Alert, Table, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 
+
 const Generos = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -18,7 +19,7 @@ const Generos = () => {
     return (<tr key={item.id}>
       <th scope="row">{item.id}</th>
       <td>{item.name}</td>
-      <td><Button outline color="danger" onClick={() => deletaGenero(item.id)}>Deletar</Button>  <Button outline color="warning" onClick={editaGenero}>Editar</Button>{''}</td>
+      <td><Button outline color="danger" onClick={() => deletaGenero(item.id)}>Deletar</Button> <Link to={"/generos/" + item.id}><Button outline color="secondary">Editar</Button></Link> </td>
     </tr>)
   }
 
@@ -31,11 +32,6 @@ const Generos = () => {
       })
   }
 
-  const editaGenero = id => {
-    axios
-
-
-  }
 
   if (data.length === 0) {
     return (
