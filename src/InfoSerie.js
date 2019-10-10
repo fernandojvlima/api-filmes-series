@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Label, Badge, Form, Input, FormGroup, Button } from 'reactstrap';
+import { Redirect } from 'react-router-dom';
 
 const InfoSerie = ({ match }) => {
   const [form, setForm] = useState({
     name: ''
   });
-
+  const [success, setSuccess] = useState(false)
   const [data, setData] = useState({});
+  const [genreId, setGenreId] = useState('');
+  const [genres, setGenres] = useState([])
 
   useEffect(() => {
     axios
@@ -18,12 +21,34 @@ const InfoSerie = ({ match }) => {
       })
   }, [match.params.id])
 
-  const save = item => {
-    console.log('save')
+  useEffect(() => {
+    axios
+      .get('/api/genres/')
+      .then(res => {
+        setGenres(res.data.data)
+      })
+  }, [])
+
+  const onChange = field => evt => {
+    setForm({
+      ...form,
+      [field]: evt.target.value
+    })
   }
 
-  const onChange = () => {
-    console.log('onChange')
+  const onChangeGender = evt => {
+    setGenreId(evt.target.value)
+  }
+
+  const save = () => {
+    axios
+      .put('/series' + match.params.id, {
+        ...form,
+        genre: genreId
+      })
+      .then(res => {
+        setSuccess(true)
+      })
   }
 
   //custom header
@@ -34,6 +59,12 @@ const InfoSerie = ({ match }) => {
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat'
+  }
+
+  if (success) {
+    return (
+      <Redirect to="/series" />
+    )
   }
 
   return (
@@ -63,28 +94,31 @@ const InfoSerie = ({ match }) => {
             <Label htmlFor="nomeSerie">Nome da Serie</Label>
             <Input type="text" value={data.name} onChange={onChange} id="name" />
           </FormGroup>
+
           <FormGroup>
-            <Label for="exampleText">Comentários</Label>
-            <Input type="textarea" onChange={onChange} name="comments" id="comments" />
+            <Label htmlFor="exampleText">Comentários</Label>
+            <Input type="textarea" value={form.comments} onChange={onChange('comments')} name="comments" id="comments" />
           </FormGroup>
+
           <FormGroup>
-            <Label for="exampleSelect">Gênero</Label>
-            <Input type="select" name="genero" id="genero">
-              <option>1</option>
-              <option>2</option>
+            <Label htmlFor="exampleSelect">Gênero</Label>
+            <Input type="select" onChangeGender={onChangeGender} name="genero" id="genero">
+              {genres.map(genre => <option key={genre.id} value={genre.id}>{genre.name}</option>)}
             </Input>
           </FormGroup>
+
           <FormGroup tag="fieldset">
             <legend>Status</legend>
             <FormGroup check>
               <Label check>
-                <Input type="radio" name="radio1" />{' '}
+                <Input type="radio" value="ASSISTIDO" onChange={onChange('ASSISTIDO')} id="assistido" name="status" checked={form.status === 'ASSISTIDO'} />{' '}
                 Assistido
             </Label>
             </FormGroup>
+
             <FormGroup check>
               <Label check>
-                <Input type="radio" name="radio1" />{' '}
+                <Input type="radio" value="PARA_ASSISTIR" onChange={onChange('PARA_ASSISTIR')} id="paraAssistir" name="status" checked={form.status === 'PARA_ASSISTIR'} />{' '}
                 Para assistir
             </Label>
             </FormGroup>
