@@ -19,7 +19,8 @@ const Generos = () => {
     return (<tr key={item.id}>
       <th scope="row">{item.id}</th>
       <td>{item.name}</td>
-      <td><Button outline color="danger" onClick={() => deletaGenero(item.id)}>Deletar</Button> <Link to={"/generos/" + item.id}><Button outline color="secondary">Editar</Button></Link> </td>
+      <td><Button outline color="danger" onClick={() => deletaGenero(item.id)}>Deletar</Button>{' '}
+        <Link to={"/generos/" + item.id}><Button outline color="secondary">Editar</Button></Link> </td>
     </tr>)
   }
 
